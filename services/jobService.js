@@ -1,8 +1,10 @@
 const { CronJob } = require('cron');
 const { insertCoinNames } = require('../utils/coins/insertIncludesCoin');
 
+const { insertCoinData } = require('./dataService');
+
 const insertCoinNamesJob = () => {
-  const insertCoinNamesJob = new CronJob(
+  const job = new CronJob(
     '0 0 * * * *',
     () => {
       insertCoinNames();
@@ -12,7 +14,21 @@ const insertCoinNamesJob = () => {
     }
   );
 
-  return insertCoinNamesJob;
+  return job;
 };
 
-module.exports = { insertCoinNamesJob };
+const insertCoinDataJob = () => {
+  const job = new CronJob(
+    '*/5 * * * * *',
+    () => {
+      insertCoinData();
+    },
+    {
+      timezone: 'Asia/Seoul',
+    }
+  );
+
+  return job;
+};
+
+module.exports = { insertCoinNamesJob, insertCoinDataJob };
