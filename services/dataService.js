@@ -1,40 +1,51 @@
-const { groupAndFormat } = require('../utils/coins/groupAndFormat');
-const { checkLongStr, checkShortStr } = require('../utils/helper/checkStr');
-const { insertIncludesCoin } = require('../utils/coins/insertIncludesCoin');
+const {
+  insertLastPostData,
+  findLastPostData,
+} = require('../models/lastPostData');
+const { insertPostsData } = require('../models/postsData');
+const { extractByDateAndTime } = require('../utils/coins/extractByDateAndTime');
+const { scrapDC } = require('./scrapService');
 
-const extractByDateAndTime = (posts) => {
-  const formattedData = groupAndFormat(posts);
+const insertInitialCoinData = async () => {
+  const posts = [];
 
-  const extractedData = formattedData.flatMap((item) => {
-    const currentDate = item.date;
+  for (let i = 1; i < 10; i++) {
+    const currentTitle = await scrapDC(i);
+    posts.push(...currentTitle);
+  }
 
-    const extractedPostsData = item.data.map((dataItem) => {
-      const currentTime = dataItem.time;
+  const lastPost = posts[posts.length - 1];
 
-      const convertedData = dataItem.posts.reduce(
-        (acc, cur) => {
-          acc.long = checkLongStr(cur.title) ? acc.long + 1 : acc.long;
-          acc.short = checkShortStr(cur.title) ? acc.short + 1 : acc.short;
-          acc.coins = insertIncludesCoin(cur.title, acc.coins);
+  await insertLastPostData(lastPost.postNum);
 
-          return acc;
-        },
-        {
-          date: currentDate,
-          time: currentTime,
-          long: 0,
-          short: 0,
-          coins: {},
-        }
-      );
+  const extractedData = await extractByDateAndTime(posts);
 
-      return convertedData;
-    });
-
-    return extractedPostsData;
-  });
-
-  return extractedData;
+  await insertPostsData(extractedData);
 };
 
-module.exports = { extractByDateAndTime };
+const insertCoinData = async () => {
+  const posts = [];
+
+  while (true) {
+    let page = 1;
+    const lastPostNum = await findLastPostData();
+    const currentTitle = await scrapDC(page);
+    const lastPostIndex = currentTitle.findIndex(
+      (item) => item.postNum === lastPostNum
+    );
+
+    if (lastPostIndex !== -1) {
+      posts.concat(currentTitle.slice(0, lastPostIndex));
+      break;
+    }
+
+    posts.push(...currentTitle);
+    page++;
+  }
+
+  const extractedData = extractByDateAndTime(posts);
+
+  await insertPostsData(extractedData);
+};
+
+module.exports = { insertInitialCoinData, insertCoinData };
