@@ -9,14 +9,14 @@ const { scrapDC } = require('./scrapService');
 const insertInitialCoinData = async () => {
   const posts = [];
 
-  for (let i = 1; i < 10; i++) {
+  for (let i = 1; i < 2; i++) {
     const currentTitle = await scrapDC(i);
     posts.push(...currentTitle);
   }
 
-  const lastPost = posts[posts.length - 1];
+  const lastPostNum = posts[0].postNum;
 
-  await insertLastPostData(lastPost.postNum);
+  await insertLastPostData(lastPostNum);
 
   const extractedData = await extractByDateAndTime(posts);
 
@@ -25,17 +25,17 @@ const insertInitialCoinData = async () => {
 
 const insertCoinData = async () => {
   const posts = [];
+  const lastPostNum = await findLastPostData();
+  let page = 1;
 
   while (true) {
-    let page = 1;
-    const lastPostNum = await findLastPostData();
     const currentTitle = await scrapDC(page);
     const lastPostIndex = currentTitle.findIndex(
       (item) => item.postNum === lastPostNum
     );
 
     if (lastPostIndex !== -1) {
-      posts.concat(currentTitle.slice(0, lastPostIndex));
+      posts.push(...currentTitle.slice(0, lastPostIndex));
       break;
     }
 
@@ -43,7 +43,10 @@ const insertCoinData = async () => {
     page++;
   }
 
-  const extractedData = extractByDateAndTime(posts);
+  const updatedLastPostNum = posts[0].postNum;
+  await insertLastPostData(updatedLastPostNum);
+
+  const extractedData = await extractByDateAndTime(posts);
 
   await insertPostsData(extractedData);
 };

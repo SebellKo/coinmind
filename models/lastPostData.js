@@ -25,7 +25,7 @@ const findLastPostData = async () => {
 
     const result = await collection.findOne();
 
-    return result.postNum;
+    return result.lastPostNum;
   } catch (error) {
     console.log('findLastPost 에러', error);
     throw error;
