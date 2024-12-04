@@ -1,4 +1,10 @@
-const extractByDateAndTime = (posts) => {
+const { groupAndFormat } = require('./groupAndFormat');
+const { checkLongStr, checkShortStr } = require('../helper/checkStr');
+const { insertIncludesCoin } = require('./insertIncludesCoin');
+const { getCoinNames } = require('../../services/coinService');
+
+const extractByDateAndTime = async (posts) => {
+  const upbitCoins = await getCoinNames();
   const formattedData = groupAndFormat(posts);
 
   const extractedData = formattedData.flatMap((item) => {
@@ -11,7 +17,7 @@ const extractByDateAndTime = (posts) => {
         (acc, cur) => {
           acc.long = checkLongStr(cur.title) ? acc.long + 1 : acc.long;
           acc.short = checkShortStr(cur.title) ? acc.short + 1 : acc.short;
-          acc.coins = insertIncludesCoin(cur.title, acc.coins);
+          acc.coins = insertIncludesCoin(cur.title, acc.coins, upbitCoins);
 
           return acc;
         },
