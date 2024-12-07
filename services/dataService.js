@@ -2,8 +2,9 @@ const {
   insertLastPostData,
   findLastPostData,
 } = require('../models/lastPostData');
-const { insertPostsData } = require('../models/postsData');
+const { insertPostsData, getAllData } = require('../models/postsData');
 const { extractByDateAndTime } = require('../utils/coins/extractByDateAndTime');
+const { filterData } = require('../utils/data/filterData');
 const { scrapDC } = require('./scrapService');
 
 const insertInitialCoinData = async () => {
@@ -51,4 +52,12 @@ const insertCoinData = async () => {
   await insertPostsData(extractedData);
 };
 
-module.exports = { insertInitialCoinData, insertCoinData };
+const getFilteredData = async (filter) => {
+  const data = await getAllData();
+
+  const filteredData = filterData(data, filter);
+
+  return filteredData;
+};
+
+module.exports = { insertInitialCoinData, insertCoinData, getFilteredData };
