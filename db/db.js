@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-require('dotenv').config();
+require('dotenv').config('../.env');
 
 const url = `mongodb+srv://fulfilled:${process.env.COINMIND_MONGODB_SECRET_KEY}@${process.env.MONGODB_COLLECTION_NAME}.jcxdn.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.MONGODB_COLLECTION_NAME}`;
 let connectDB;
