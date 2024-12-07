@@ -3,6 +3,7 @@ require('dotenv').config();
 
 // const url = `mongodb+srv://fulfilled:${process.env.COINMIND_MONGODB_SECRET_KEY}@${process.env.MONGODB_COLLECTION_NAME}.jcxdn.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.MONGODB_COLLECTION_NAME}`;
 const url = process.env.MONGODB_URI;
+console.log(url);
 let connectDB;
 
 if (process.env.NODE_ENV === 'development') {
