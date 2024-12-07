@@ -1,5 +1,5 @@
 const { CronJob } = require('cron');
-const { insertCoinNames } = require('../utils/coins/insertIncludesCoin');
+const { insertCoinNames } = require('./coinService');
 
 const { insertCoinData } = require('./dataService');
 

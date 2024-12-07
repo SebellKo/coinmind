@@ -1,16 +1,26 @@
-const { extractByDateAndTime } = require('./services/dataService');
-const { scrapDC } = require('./services/scrapService');
+const express = require('express');
 
-const main = async () => {
-  const posts = [];
-  for (let i = 1; i < 10; i++) {
-    const currentTitle = await scrapDC(i);
-    posts.push(...currentTitle);
-  }
+const dataRouter = require('./routes/data');
+const coinsRouter = require('./routes/coins');
+const { insertInitialCoinData } = require('./services/dataService');
+const {
+  insertCoinNamesJob,
+  insertCoinDataJob,
+} = require('./services/jobService');
 
-  const extractedData = extractByDateAndTime(posts);
+const app = express();
+const port = 8080;
 
-  console.log(extractedData);
-};
+app.use('/data', dataRouter);
+app.use('/coins', coinsRouter);
 
-main();
+(async () => {
+  await insertInitialCoinData();
+
+  insertCoinNamesJob.start();
+  insertCoinDataJob.start();
+})();
+
+app.listen(port, async () => {
+  console.log('server is running');
+});
