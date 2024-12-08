@@ -14,12 +14,15 @@ const port = 8080;
 app.use('/data', dataRouter);
 app.use('/coins', coinsRouter);
 
-// (async () => {
-//   await insertInitialCoinData();
+(async () => {
+  await insertInitialCoinData();
 
-//   insertCoinNamesJob.start();
-//   insertCoinDataJob.start();
-// })();
+  const coinNameJob = insertCoinNamesJob();
+  const coinDataJob = insertCoinDataJob();
+
+  coinNameJob.start();
+  coinDataJob.start();
+})();
 
 app.listen(port, async () => {
   console.log('server is running');
