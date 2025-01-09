@@ -11,7 +11,7 @@ const insertLastPostData = async (lastPostNum) => {
       { upsert: true }
     );
 
-    return result.value;
+    return result.lastPostNum;
   } catch (error) {
     console.error('lastPostData 삽입 에러', error);
     throw error;
