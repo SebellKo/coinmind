@@ -10,7 +10,8 @@ const { scrapDC } = require('./scrapService');
 const insertInitialCoinData = async () => {
   const posts = [];
 
-  for (let i = 1; i < 7939; i++) {
+
+  for (let i = 1; i < 14055; i++) {
     const currentTitle = await scrapDC(i);
     posts.push(...currentTitle);
   }
@@ -43,6 +44,8 @@ const insertCoinData = async () => {
     posts.push(...currentTitle);
     page++;
   }
+
+  if (posts.length === 0) return;
 
   const updatedLastPostNum = posts[0].postNum;
   await insertLastPostData(updatedLastPostNum);
