@@ -12,6 +12,7 @@ const insertLastPostData = async (lastPostNum) => {
     );
 
     return result.lastPostNum;
+
   } catch (error) {
     console.error('lastPostData 삽입 에러', error);
     throw error;
