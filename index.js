@@ -24,6 +24,6 @@ app.use('/coins', coinsRouter);
   insertCoinDataJob().start();
 })();
 
-app.listen(port, async () => {
+app.listen(port, () => {
   console.log('server is running');
 });
