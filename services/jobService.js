@@ -19,7 +19,7 @@ const insertCoinNamesJob = () => {
 
 const insertCoinDataJob = () => {
   const job = new CronJob(
-    '*/5 * * * * *',
+    '0 */5 * * * *',
     () => {
       insertCoinData();
     },
