@@ -44,6 +44,8 @@ const insertCoinData = async () => {
     page++;
   }
 
+  if (posts.length === 0) return;
+
   const updatedLastPostNum = posts[0].postNum;
   await insertLastPostData(updatedLastPostNum);
 
